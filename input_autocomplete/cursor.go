@@ -12,16 +12,16 @@ func NewCursor() *Cursor {
 	}
 }
 
+func (c *Cursor) canMoveLeft(n int) bool {
+	return c.position-n >= 0
+}
+
 func (c *Cursor) IncrementPosition() {
 	c.position++
 }
 
 func (c *Cursor) SetPosition(newPos int) {
 	c.position = newPos
-}
-
-func (c *Cursor) canMoveLeft(n int) bool {
-	return c.position-n >= 0
 }
 
 func (c *Cursor) MoveRight() {

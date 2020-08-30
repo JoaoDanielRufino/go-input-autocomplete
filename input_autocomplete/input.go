@@ -16,6 +16,10 @@ func NewInput(fixedText string) *Input {
 	}
 }
 
+func (i *Input) canDeleteChar() bool {
+	return i.cursor.GetPosition() >= 1
+}
+
 func (i *Input) AddChar(char rune) {
 	pos := i.cursor.GetPosition()
 	c := string(char)
@@ -31,10 +35,6 @@ func (i *Input) AddChar(char rune) {
 		i.Print()
 		i.MoveCursorLeftTo(aux)
 	}
-}
-
-func (i *Input) canDeleteChar() bool {
-	return i.cursor.GetPosition() >= 1
 }
 
 func (i *Input) RemoveChar() {
