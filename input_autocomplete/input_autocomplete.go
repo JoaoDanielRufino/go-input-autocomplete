@@ -23,16 +23,10 @@ func keyboardListener(input *Input) error {
 			input.MoveCursorRight()
 		case keyboard.KeyBackspace:
 			input.RemoveChar()
-			input.Print()
-			input.MoveCursorLeftTo(len(input.currentText) - input.cursor.GetPosition())
 		case keyboard.KeyBackspace2:
 			input.RemoveChar()
-			input.Print()
-			input.MoveCursorLeftTo(len(input.currentText) - input.cursor.GetPosition())
 		default:
-			c := string(char)
-			input.AddChar(c)
-			fmt.Print(c)
+			input.AddChar(char)
 		}
 	}
 }

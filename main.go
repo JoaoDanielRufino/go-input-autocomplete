@@ -1,13 +1,17 @@
 package main
 
 import (
+	"fmt"
+
 	"./input_autocomplete"
 )
 
 func main() {
-	_, err := input_autocomplete.Read("Path: ")
+	path, err := input_autocomplete.Read("Path: ")
 
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println(path)
 }

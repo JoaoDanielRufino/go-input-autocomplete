@@ -37,7 +37,7 @@ func (c *Cursor) MoveLeft() {
 }
 
 func (c *Cursor) MoveLeftTo(x int) {
-	if c.canMoveLeft(x) {
+	if c.canMoveLeft(x) && x > 0 {
 		fmt.Printf("\033[%dD", x)
 		c.position -= x
 	}

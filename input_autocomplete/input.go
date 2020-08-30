@@ -16,20 +16,36 @@ func NewInput(fixedText string) *Input {
 	}
 }
 
-func (i *Input) AddChar(c string) {
-	i.currentText += c
-	i.cursor.IncrementPosition()
+func (i *Input) AddChar(char rune) {
+	pos := i.cursor.GetPosition()
+	c := string(char)
+
+	if pos == len(i.currentText) {
+		i.currentText += c
+		fmt.Print(c)
+		i.cursor.IncrementPosition()
+	} else {
+		aux := len(i.currentText) - pos
+		i.currentText = i.currentText[:pos] + c + i.currentText[pos:]
+		i.cursor.SetPosition(len(i.currentText))
+		i.Print()
+		i.MoveCursorLeftTo(aux)
+	}
 }
 
 func (i *Input) canDeleteChar() bool {
-	return len(i.currentText) >= 1
+	return i.cursor.GetPosition() >= 1
 }
 
 func (i *Input) RemoveChar() {
+	pos := i.cursor.GetPosition()
+
 	if i.canDeleteChar() {
-		pos := i.cursor.GetPosition()
+		aux := len(i.currentText) - pos
 		i.currentText = i.currentText[:pos-1] + i.currentText[pos:]
 		i.cursor.SetPosition(len(i.currentText))
+		i.Print()
+		i.MoveCursorLeftTo(aux)
 	}
 }
 
@@ -42,7 +58,9 @@ func (i *Input) MoveCursorLeftTo(x int) {
 }
 
 func (i *Input) MoveCursorRight() {
-	i.cursor.MoveRight()
+	if i.cursor.GetPosition() < len(i.currentText) {
+		i.cursor.MoveRight()
+	}
 }
 
 func (i *Input) Print() {
