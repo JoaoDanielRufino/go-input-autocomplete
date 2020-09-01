@@ -33,28 +33,23 @@ func (i *Input) AddChar(char rune) {
 		i.currentText = i.currentText[:pos] + c + i.currentText[pos:]
 		i.cursor.SetPosition(len(i.currentText))
 		i.Print()
-		i.MoveCursorLeftTo(aux)
+		i.cursor.MoveLeftNPos(aux)
 	}
 }
 
 func (i *Input) RemoveChar() {
-	pos := i.cursor.GetPosition()
-
 	if i.canDeleteChar() {
+		pos := i.cursor.GetPosition()
 		aux := len(i.currentText) - pos
 		i.currentText = i.currentText[:pos-1] + i.currentText[pos:]
 		i.cursor.SetPosition(len(i.currentText))
 		i.Print()
-		i.MoveCursorLeftTo(aux)
+		i.cursor.MoveLeftNPos(aux)
 	}
 }
 
 func (i *Input) MoveCursorLeft() {
 	i.cursor.MoveLeft()
-}
-
-func (i *Input) MoveCursorLeftTo(x int) {
-	i.cursor.MoveLeftTo(x)
 }
 
 func (i *Input) MoveCursorRight() {
