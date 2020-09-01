@@ -1,12 +1,22 @@
 package input_autocomplete
 
-import "runtime"
+import (
+	"fmt"
+	"runtime"
+)
+
+type autocomplete struct {
+	cmd DirLister
+}
 
 func Autocomplete(text string) (string, error) {
 	os := runtime.GOOS
 	switch os {
 	case "linux":
-		return linuxAutocomplete(text)
+		a := autocomplete{
+			cmd: CmdLinux{},
+		}
+		return a.linuxAutocomplete(text)
 	case "darwin":
 		return text, nil
 	case "windows":
@@ -16,7 +26,10 @@ func Autocomplete(text string) (string, error) {
 	}
 }
 
-func linuxAutocomplete(text string) (string, error) {
+func (a autocomplete) linuxAutocomplete(text string) (string, error) {
+	contents, _ := a.cmd.ListContent(text)
+
+	fmt.Printf("\n%q\n", contents)
 
 	return text, nil
 }

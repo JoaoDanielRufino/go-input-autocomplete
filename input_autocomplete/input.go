@@ -58,6 +58,16 @@ func (i *Input) MoveCursorRight() {
 	}
 }
 
+func (i *Input) Autocomplete() error {
+	str, err := Autocomplete(i.currentText)
+
+	i.currentText = str
+	i.cursor.SetPosition(len(i.currentText))
+	i.Print()
+
+	return err
+}
+
 func (i *Input) Print() {
 	fmt.Print("\033[G\033[K")
 	fmt.Print(i.fixedText + i.currentText)
