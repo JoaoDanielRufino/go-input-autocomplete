@@ -59,9 +59,12 @@ func (i *Input) MoveCursorRight() {
 }
 
 func (i *Input) Autocomplete() error {
-	str, err := Autocomplete(i.currentText)
+	autocompletedText, err := Autocomplete(i.currentText)
+	if err != nil {
+		return err
+	}
 
-	i.currentText = str
+	i.currentText = autocompletedText
 	i.cursor.SetPosition(len(i.currentText))
 	i.Print()
 

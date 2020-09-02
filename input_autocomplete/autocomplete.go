@@ -1,35 +1,57 @@
 package input_autocomplete
 
 import (
-	"fmt"
 	"runtime"
+	"strings"
 )
 
 type autocomplete struct {
 	cmd DirLister
 }
 
-func Autocomplete(text string) (string, error) {
+func Autocomplete(path string) (string, error) {
 	os := runtime.GOOS
 	switch os {
 	case "linux":
 		a := autocomplete{
 			cmd: CmdLinux{},
 		}
-		return a.linuxAutocomplete(text)
+		return a.linuxAutocomplete(path)
 	case "darwin":
-		return text, nil
+		return path, nil
 	case "windows":
-		return text, nil
+		return path, nil
 	default:
-		return text, nil
+		return path, nil
 	}
 }
 
-func (a autocomplete) linuxAutocomplete(text string) (string, error) {
-	contents, _ := a.cmd.ListContent(text)
+func (a autocomplete) linuxAutocomplete(path string) (string, error) {
+	var splittedPath []string
+	if path[0] == '/' {
+		splittedPath = strings.Split(path[1:], "/")
+	} else {
+		splittedPath = strings.Split(path, "/")
+	}
 
-	fmt.Printf("\n%q\n", contents)
+	lastValidSplittedPath := splittedPath[:len(splittedPath)-1]
 
-	return text, nil
+	var lastValidPath string
+	for _, subPath := range lastValidSplittedPath {
+		lastValidPath += "/" + subPath
+	}
+
+	contents, err := a.cmd.ListContent(lastValidPath)
+	if err != nil {
+		return path, err
+	}
+
+	for _, dir := range contents {
+		if strings.HasPrefix(dir, splittedPath[len(splittedPath)-1]) {
+			newPath := append(lastValidSplittedPath, dir)
+			return "/" + strings.Join(newPath, "/") + "/", nil
+		}
+	}
+
+	return path, nil
 }
