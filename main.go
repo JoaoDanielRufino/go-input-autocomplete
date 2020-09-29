@@ -1,7 +1,5 @@
 package main
 
-//yanzera
-
 import (
 	"fmt"
 
