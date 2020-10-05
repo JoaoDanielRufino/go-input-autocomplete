@@ -1,6 +1,6 @@
 # go-input-autocomplete
 
-A useful input that can autocomplete users path to directories or files when tab key is pressed. The porpouse is to be similar to bash/cmd native autocompletion.
+A useful input that can autocomplete users path to directories or files when tab key is pressed. The purpose is to be similar to bash/cmd native autocompletion.
 
 ## Installation
 
