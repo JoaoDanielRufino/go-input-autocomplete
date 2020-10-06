@@ -6,7 +6,7 @@ import (
 )
 
 type autocomplete struct {
-	cmd DirLister
+	cmd DirUtil
 }
 
 func Autocomplete(path string) (string, error) {
@@ -40,6 +40,13 @@ func (a autocomplete) linuxAutocomplete(path string) (string, error) {
 	for _, subPath := range lastValidSplittedPath {
 		lastValidPath += "/" + subPath
 	}
+	if lastValidPath == "" {
+		lastValidPath = "/"
+	}
+
+	if !a.cmd.IsDir(lastValidPath) {
+		return lastValidPath, nil
+	}
 
 	contents, err := a.cmd.ListContent(lastValidPath)
 	if err != nil {
@@ -48,8 +55,12 @@ func (a autocomplete) linuxAutocomplete(path string) (string, error) {
 
 	for _, dir := range contents {
 		if strings.HasPrefix(dir, splittedPath[len(splittedPath)-1]) {
-			newPath := append(lastValidSplittedPath, dir)
-			return "/" + strings.Join(newPath, "/") + "/", nil
+			newPathSlice := append(lastValidSplittedPath, dir)
+			newPath := "/" + strings.Join(newPathSlice, "/")
+			if isDir(newPath) {
+				newPath += "/"
+			}
+			return newPath, nil
 		}
 	}
 

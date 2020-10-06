@@ -1,6 +1,8 @@
 package input_autocomplete
 
 import (
+	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -11,8 +13,9 @@ type CmdDarwin struct{}
 
 type CmdWindows struct{}
 
-type DirLister interface {
+type DirUtil interface {
 	ListContent(path string) ([]string, error)
+	IsDir(path string) bool
 }
 
 func (c CmdLinux) ListContent(path string) ([]string, error) {
@@ -25,4 +28,14 @@ func (c CmdLinux) ListContent(path string) ([]string, error) {
 	lsOutput := strings.Split(string(stdout), "\n")
 
 	return lsOutput, nil
+}
+
+func (c CmdLinux) IsDir(dir string) bool {
+	info, err := os.Stat(dir)
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+
+	return info.IsDir()
 }
