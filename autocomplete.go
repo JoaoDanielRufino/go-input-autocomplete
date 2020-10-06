@@ -1,6 +1,7 @@
 package input_autocomplete
 
 import (
+	"os"
 	"runtime"
 	"strings"
 )
@@ -40,6 +41,13 @@ func (a autocomplete) linuxAutocomplete(path string) (string, error) {
 	for _, subPath := range lastValidSplittedPath {
 		lastValidPath += "/" + subPath
 	}
+	if lastValidPath == "" {
+		lastValidPath = "/"
+	}
+
+	if !isDir(lastValidPath) {
+		return lastValidPath, nil
+	}
 
 	contents, err := a.cmd.ListContent(lastValidPath)
 	if err != nil {
@@ -48,10 +56,22 @@ func (a autocomplete) linuxAutocomplete(path string) (string, error) {
 
 	for _, dir := range contents {
 		if strings.HasPrefix(dir, splittedPath[len(splittedPath)-1]) {
-			newPath := append(lastValidSplittedPath, dir)
-			return "/" + strings.Join(newPath, "/") + "/", nil
+			newPathSlice := append(lastValidSplittedPath, dir)
+			newPath := "/" + strings.Join(newPathSlice, "/")
+			if isDir(newPath) {
+				newPath += "/"
+			}
+			return newPath, nil
 		}
 	}
 
 	return path, nil
+}
+
+func isDir(dir string) bool {
+	info, err := os.Stat(dir)
+	if err != nil {
+		return false
+	}
+	return info.IsDir()
 }

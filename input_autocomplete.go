@@ -2,7 +2,6 @@ package input_autocomplete
 
 import (
 	"fmt"
-
 	"github.com/eiannone/keyboard"
 )
 
@@ -30,6 +29,7 @@ func keyboardListener(input *Input) error {
 			if err != nil {
 				return err
 			}
+
 		default:
 			input.AddChar(char)
 		}
