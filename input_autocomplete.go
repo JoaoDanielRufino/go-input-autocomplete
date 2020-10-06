@@ -2,8 +2,6 @@ package input_autocomplete
 
 import (
 	"fmt"
-	"os"
-
 	"github.com/eiannone/keyboard"
 )
 
@@ -54,14 +52,4 @@ func Read(text string) (string, error) {
 	}
 
 	return input.GetCurrentText(), nil
-}
-
-func isDir(dir string) bool {
-	info, err := os.Stat(dir)
-	if err != nil {
-		fmt.Println(err)
-		return false
-	}
-
-	return info.IsDir()
 }

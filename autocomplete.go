@@ -1,12 +1,13 @@
 package input_autocomplete
 
 import (
+	"os"
 	"runtime"
 	"strings"
 )
 
 type autocomplete struct {
-	cmd DirUtil
+	cmd DirLister
 }
 
 func Autocomplete(path string) (string, error) {
@@ -44,7 +45,7 @@ func (a autocomplete) linuxAutocomplete(path string) (string, error) {
 		lastValidPath = "/"
 	}
 
-	if !a.cmd.IsDir(lastValidPath) {
+	if !isDir(lastValidPath) {
 		return lastValidPath, nil
 	}
 
@@ -65,4 +66,12 @@ func (a autocomplete) linuxAutocomplete(path string) (string, error) {
 	}
 
 	return path, nil
+}
+
+func isDir(dir string) bool {
+	info, err := os.Stat(dir)
+	if err != nil {
+		return false
+	}
+	return info.IsDir()
 }
