@@ -13,13 +13,11 @@ type autocomplete struct {
 func Autocomplete(path string) (string, error) {
 	os := runtime.GOOS
 	switch os {
-	case "linux":
+	case "linux", "darwin":
 		a := autocomplete{
-			cmd: CmdLinux{},
+			cmd: CmdUnix{},
 		}
-		return a.linuxAutocomplete(path)
-	case "darwin":
-		return path, nil
+		return a.unixAutocomplete(path)
 	case "windows":
 		return path, nil
 	default:
@@ -27,7 +25,7 @@ func Autocomplete(path string) (string, error) {
 	}
 }
 
-func (a autocomplete) linuxAutocomplete(path string) (string, error) {
+func (a autocomplete) unixAutocomplete(path string) (string, error) {
 	var splittedPath []string
 	if path[0] == '/' {
 		splittedPath = strings.Split(path[1:], "/")
