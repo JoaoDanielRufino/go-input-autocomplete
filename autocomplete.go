@@ -25,7 +25,6 @@ func Autocomplete(path string) (string, error) {
 	}
 }
 
-
 // Return if the string starts with prefix, case insensitive
 func hasInsensitivePrefix(s string, prefix string) bool {
 	return len(s) >= len(prefix) && strings.EqualFold(s[0:len(prefix)], prefix)
