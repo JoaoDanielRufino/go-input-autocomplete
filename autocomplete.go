@@ -27,6 +27,11 @@ func Autocomplete(path string) (string, error) {
 	}
 }
 
+// Return if the string starts with prefix, case insensitive
+func hasInsensitivePrefix(s string, prefix string) bool {
+	return len(s) >= len(prefix) && strings.EqualFold(s[0:len(prefix)], prefix)
+}
+
 func (a autocomplete) linuxAutocomplete(path string) (string, error) {
 	var splittedPath []string
 	if path[0] == '/' {
@@ -55,7 +60,7 @@ func (a autocomplete) linuxAutocomplete(path string) (string, error) {
 	}
 
 	for _, dir := range contents {
-		if strings.HasPrefix(dir, splittedPath[len(splittedPath)-1]) {
+		if hasInsensitivePrefix(dir, splittedPath[len(splittedPath)-1]) {
 			newPathSlice := append(lastValidSplittedPath, dir)
 			newPath := "/" + strings.Join(newPathSlice, "/")
 			if isDir(newPath) {
