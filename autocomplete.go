@@ -33,6 +33,10 @@ func hasInsensitivePrefix(s string, prefix string) bool {
 }
 
 func (a autocomplete) linuxAutocomplete(path string) (string, error) {
+	if path == "" {
+		return "", nil
+	}
+
 	var splittedPath []string
 	if path[0] == '/' {
 		splittedPath = strings.Split(path[1:], "/")
@@ -42,35 +46,43 @@ func (a autocomplete) linuxAutocomplete(path string) (string, error) {
 
 	lastValidSplittedPath := splittedPath[:len(splittedPath)-1]
 
-	var lastValidPath string
-	for _, subPath := range lastValidSplittedPath {
-		lastValidPath += "/" + subPath
-	}
+	lastValidPath := strings.Join(lastValidSplittedPath, "/")
+
 	if lastValidPath == "" {
-		lastValidPath = "/"
+		if path == "." {
+			lastValidPath = "."
+		} else {
+			lastValidPath = "/"
+		}
+	} else if lastValidPath[0] != '.' {
+		lastValidPath = "/" + lastValidPath
 	}
 
 	if !isDir(lastValidPath) {
 		return lastValidPath, nil
+	} else if len(lastValidPath) != 0 {
+		lastValidPath += "/"
 	}
 
 	contents, err := a.cmd.ListContent(lastValidPath)
 	if err != nil {
-		return path, err
+		return lastValidPath, err
 	}
 
 	for _, dir := range contents {
 		if hasInsensitivePrefix(dir, splittedPath[len(splittedPath)-1]) {
 			newPathSlice := append(lastValidSplittedPath, dir)
-			newPath := "/" + strings.Join(newPathSlice, "/")
+			newPath := strings.Join(newPathSlice, "/")
+			if newPath[0] != '.' {
+				newPath = "/" + newPath
+			}
 			if isDir(newPath) {
 				newPath += "/"
 			}
 			return newPath, nil
 		}
 	}
-
-	return path, nil
+	return lastValidPath, nil
 }
 
 func isDir(dir string) bool {
