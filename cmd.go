@@ -14,7 +14,7 @@ type DirLister interface {
 }
 
 func (c CmdUnix) ListContent(path string) ([]string, error) {
-	cmd := exec.Command("ls", path)
+	cmd := exec.Command("ls", "-a", path)
 	stdout, err := cmd.Output()
 	if err != nil {
 		return nil, err
