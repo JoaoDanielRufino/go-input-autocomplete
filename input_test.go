@@ -129,7 +129,7 @@ func TestAutocompleteWithEmptyString(t *testing.T) {
 	}
 }
 
-func TestAutocompleteOnNonLinuxOS(t *testing.T) {
+func TestAutocompleteOnNonUnixOS(t *testing.T) {
 	expectedAutocomplete := "a"
 
 	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
@@ -147,15 +147,15 @@ func TestAutocompleteOnNonLinuxOS(t *testing.T) {
 	}
 }
 
-func TestAutocompleteOnLinuxOS(t *testing.T) {
-	expectedAutocomplete := "/bin/bash"
+func TestAutocompleteOnUnixOS(t *testing.T) {
+	expectedAutocomplete := "/etc/passwd"
 
 	if runtime.GOOS != "linux" && runtime.GOOS != "darwin" {
 		t.Skipf("Skip test because OS is %v", runtime.GOOS)
 	}
 
 	input := NewInput("test: ")
-	for _, ch := range "/bin/bas" {
+	for _, ch := range "/etc/passw" {
 		input.AddChar(ch)
 	}
 
@@ -165,7 +165,7 @@ func TestAutocompleteOnLinuxOS(t *testing.T) {
 		t.Errorf("Autocomplete should not return error, insted got error %v", err)
 	}
 
-	AssertTextAndPosition(t, input, expectedAutocomplete, 9)
+	AssertTextAndPosition(t, input, expectedAutocomplete, len(expectedAutocomplete))
 }
 
 func AssertTextAndPosition(t *testing.T, input *Input, expectedText string, expectedPosition int) {
