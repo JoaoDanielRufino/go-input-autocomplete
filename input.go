@@ -59,6 +59,9 @@ func (i *Input) MoveCursorRight() {
 }
 
 func (i *Input) Autocomplete() error {
+	if i.currentText == ""{
+		return nil
+	}
 	autocompletedText, err := Autocomplete(i.currentText)
 	if err != nil {
 		return err
