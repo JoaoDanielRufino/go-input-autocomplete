@@ -10,7 +10,7 @@ type autocomplete struct {
 	cmd DirLister
 }
 
-func Autocomplete(path string) (string, error) {
+func Autocomplete(path string) string {
 	os := runtime.GOOS
 	switch os {
 	case "linux", "darwin":
@@ -19,9 +19,9 @@ func Autocomplete(path string) (string, error) {
 		}
 		return a.unixAutocomplete(path)
 	case "windows":
-		return path, nil
+		return path
 	default:
-		return path, nil
+		return path
 	}
 }
 
@@ -30,12 +30,12 @@ func hasInsensitivePrefix(s string, prefix string) bool {
 	return len(s) >= len(prefix) && strings.EqualFold(s[0:len(prefix)], prefix)
 }
 
-func (a autocomplete) unixAutocomplete(path string) (string, error) {
+func (a autocomplete) unixAutocomplete(path string) string {
 	if path == "" {
-		return "", nil
+		return path
 	}
 	if path[len(path)-1] == ' ' {
-		return path, nil
+		return path
 	}
 	lastSlash := strings.LastIndex(path, "/")
 	if lastSlash == -1 || (path[0] != '/' && path[:2] != "./"){
@@ -49,7 +49,7 @@ func (a autocomplete) unixAutocomplete(path string) (string, error) {
 	} else if err == nil {
 		path = path + "/"
 	}
-	return path, nil
+	return path
 }
 
 func (a autocomplete) findFromPrefix(prefix string, lastSlash int) string {
