@@ -34,58 +34,41 @@ func (a autocomplete) unixAutocomplete(path string) (string, error) {
 	if path == "" {
 		return "", nil
 	}
-	var splittedPath []string
-	if path[0] == '/' {
-		splittedPath = strings.Split(path[1:], "/")
-	} else {
-		splittedPath = strings.Split(path, "/")
+	if path[len(path)-1] == ' ' {
+		return path, nil
 	}
-
-	lastValidSplittedPath := splittedPath[:len(splittedPath)-1]
-
-	lastValidPath := strings.Join(lastValidSplittedPath, "/")
-
-	if lastValidPath == "" {
-		if path == "." {
-			lastValidPath = "."
-		} else {
-			lastValidPath = "/"
-		}
-	} else if lastValidPath[0] != '.' {
-		lastValidPath = "/" + lastValidPath
+	lastSlash := strings.LastIndex(path, "/")
+	if lastSlash == -1 || (path[0] != '/' && path[:2] != "./"){
+		path = "./" + path
+		lastSlash = 1
 	}
-
-	if !isDir(lastValidPath) {
-		return lastValidPath, nil
-	} else if len(lastValidPath) != 0 {
-		lastValidPath += "/"
+	path = a.findFromPrefix(path, lastSlash)
+	ok, err := isDir(path)
+	if !ok && err == nil {
+		path = path + " "
+	} else if err == nil {
+		path = path + "/"
 	}
-
-	contents, err := a.cmd.ListContent(lastValidPath)
-	if err != nil {
-		return lastValidPath, err
-	}
-
-	for _, dir := range contents {
-		if hasInsensitivePrefix(dir, splittedPath[len(splittedPath)-1]) {
-			newPathSlice := append(lastValidSplittedPath, dir)
-			newPath := strings.Join(newPathSlice, "/")
-			if newPath[0] != '.' {
-				newPath = "/" + newPath
-			}
-			if isDir(newPath) {
-				newPath += "/"
-			}
-			return newPath, nil
-		}
-	}
-	return lastValidPath, nil
+	return path, nil
 }
 
-func isDir(dir string) bool {
+func (a autocomplete) findFromPrefix(prefix string, lastSlash int) string {
+	contents, err := a.cmd.ListContent(prefix[:lastSlash+1])
+	if err != nil {
+		return prefix
+	}
+	for _, content := range contents {
+		if hasInsensitivePrefix(content, prefix[lastSlash+1:]) {
+			return prefix[:lastSlash+1] + content
+		}
+	}
+	return prefix
+}
+
+func isDir(dir string) (bool, error) {
 	info, err := os.Stat(dir)
 	if err != nil {
-		return false
+		return false, err
 	}
-	return info.IsDir()
+	return info.IsDir(), nil
 }
