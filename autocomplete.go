@@ -57,7 +57,7 @@ func (a autocomplete) findFromPrefix(prefix string, lastSlash int) string {
 	if err != nil {
 		return prefix
 	}
-	for _, content := range contents {
+	for _, content := range contents[2:] {
 		if hasInsensitivePrefix(content, prefix[lastSlash+1:]) {
 			return prefix[:lastSlash+1] + content
 		}
