@@ -31,10 +31,7 @@ func hasInsensitivePrefix(s string, prefix string) bool {
 }
 
 func (a autocomplete) unixAutocomplete(path string) string {
-	if path == "" {
-		return path
-	}
-	if path[len(path)-1] == ' ' {
+	if path == "" || path[len(path)-1] == ' '{
 		return path
 	}
 	lastSlash := strings.LastIndex(path, "/")
@@ -57,7 +54,7 @@ func (a autocomplete) findFromPrefix(prefix string, lastSlash int) string {
 	if err != nil {
 		return prefix
 	}
-	for _, content := range contents[2:] {
+	for _, content := range contents {
 		if hasInsensitivePrefix(content, prefix[lastSlash+1:]) {
 			return prefix[:lastSlash+1] + content
 		}
