@@ -41,9 +41,7 @@ func (a autocomplete) unixAutocomplete(path string) string {
 	}
 	path = a.findFromPrefix(path, lastSlash)
 	ok, err := isDir(path)
-	if !ok && err == nil {
-		path = path + " "
-	} else if err == nil {
+	if ok && err == nil {
 		path = path + "/"
 	}
 	return path
