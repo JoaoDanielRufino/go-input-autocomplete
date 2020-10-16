@@ -10,7 +10,7 @@ type autocomplete struct {
 	cmd DirLister
 }
 
-func Autocomplete(path string) (string, error) {
+func Autocomplete(path string) string {
 	os := runtime.GOOS
 	switch os {
 	case "linux", "darwin":
@@ -19,9 +19,9 @@ func Autocomplete(path string) (string, error) {
 		}
 		return a.unixAutocomplete(path)
 	case "windows":
-		return path, nil
+		return path
 	default:
-		return path, nil
+		return path
 	}
 }
 
@@ -30,51 +30,40 @@ func hasInsensitivePrefix(s string, prefix string) bool {
 	return len(s) >= len(prefix) && strings.EqualFold(s[0:len(prefix)], prefix)
 }
 
-func (a autocomplete) unixAutocomplete(path string) (string, error) {
-	var splittedPath []string
-	if path[0] == '/' {
-		splittedPath = strings.Split(path[1:], "/")
-	} else {
-		splittedPath = strings.Split(path, "/")
+func (a autocomplete) unixAutocomplete(path string) string {
+	if path == "" || path[len(path)-1] == ' '{
+		return path
 	}
-
-	lastValidSplittedPath := splittedPath[:len(splittedPath)-1]
-
-	var lastValidPath string
-	for _, subPath := range lastValidSplittedPath {
-		lastValidPath += "/" + subPath
+	lastSlash := strings.LastIndex(path, "/")
+	if lastSlash == -1 || (path[0] != '/' && path[:2] != "./"){
+		path = "./" + path
+		lastSlash = 1
 	}
-	if lastValidPath == "" {
-		lastValidPath = "/"
+	path = a.findFromPrefix(path, lastSlash)
+	ok, err := isDir(path)
+	if ok && err == nil {
+		path = path + "/"
 	}
-
-	if !isDir(lastValidPath) {
-		return lastValidPath, nil
-	}
-
-	contents, err := a.cmd.ListContent(lastValidPath)
-	if err != nil {
-		return path, err
-	}
-
-	for _, dir := range contents {
-		if hasInsensitivePrefix(dir, splittedPath[len(splittedPath)-1]) {
-			newPathSlice := append(lastValidSplittedPath, dir)
-			newPath := "/" + strings.Join(newPathSlice, "/")
-			if isDir(newPath) {
-				newPath += "/"
-			}
-			return newPath, nil
-		}
-	}
-
-	return path, nil
+	return path
 }
 
-func isDir(dir string) bool {
+func (a autocomplete) findFromPrefix(prefix string, lastSlash int) string {
+	contents, err := a.cmd.ListContent(prefix[:lastSlash+1])
+	if err != nil {
+		return prefix
+	}
+	for _, content := range contents {
+		if hasInsensitivePrefix(content, prefix[lastSlash+1:]) {
+			return prefix[:lastSlash+1] + content
+		}
+	}
+	return prefix
+}
+
+func isDir(dir string) (bool, error) {
 	info, err := os.Stat(dir)
 	if err != nil {
-		return false
+		return false, err
 	}
-	return info.IsDir()
+	return info.IsDir(), nil
 }

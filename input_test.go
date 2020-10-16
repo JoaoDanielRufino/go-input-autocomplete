@@ -119,16 +119,6 @@ func TestGetCurrentText(t *testing.T) {
 	}
 }
 
-func TestAutocompleteWithEmptyString(t *testing.T) {
-	input := NewInput("test: ")
-
-	currentTextResult := input.Autocomplete()
-
-	if currentTextResult != nil {
-		t.Errorf("Autocomplete with empty string should return nil, instead returned %v", currentTextResult)
-	}
-}
-
 func TestAutocompleteOnNonUnixOS(t *testing.T) {
 	expectedAutocomplete := "a"
 
@@ -137,11 +127,9 @@ func TestAutocompleteOnNonUnixOS(t *testing.T) {
 	}
 	input := NewInput("test: ")
 	input.AddChar('a')
-	err := input.Autocomplete()
+	input.Autocomplete()
 
-	if err != nil {
-		t.Errorf("Autocomplete should not return error on windows machines, insted got error %v", err)
-	}
+
 	if input.currentText != expectedAutocomplete {
 		t.Errorf("Autocomplete with amy string on windows should return the same string - %v instead returned %v", expectedAutocomplete, input.currentText)
 	}
@@ -159,11 +147,7 @@ func TestAutocompleteOnUnixOS(t *testing.T) {
 		input.AddChar(ch)
 	}
 
-	err := input.Autocomplete()
-
-	if err != nil {
-		t.Errorf("Autocomplete should not return error, insted got error %v", err)
-	}
+	input.Autocomplete()
 
 	AssertTextAndPosition(t, input, expectedAutocomplete, len(expectedAutocomplete))
 }

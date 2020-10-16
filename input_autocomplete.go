@@ -25,10 +25,7 @@ func keyboardListener(input *Input) error {
 		case keyboard.KeyBackspace2:
 			input.RemoveChar()
 		case keyboard.KeyTab:
-			err := input.Autocomplete()
-			if err != nil {
-				return err
-			}
+			input.Autocomplete()
 
 		default:
 			input.AddChar(char)
