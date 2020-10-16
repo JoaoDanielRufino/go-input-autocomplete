@@ -101,14 +101,14 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 			fields: fields{
 				cmd: DirListerCustomMock{
 					listContentMock: func(path string) ([]string, error) {
-						return []string{".", "..", "home", "binary", "etc", "file.txt "}, nil
+						return []string{".", "..", "home", "binary", "etc", "file.txt"}, nil
 					},
 				},
 			},
 			args:   args{
-				path: "./file.txt ",
+				path: "./file.txt",
 			},
-			want:   "./file.txt ",
+			want:   "./file.txt",
 		},
 		{
 			name:   "failed to list content",
