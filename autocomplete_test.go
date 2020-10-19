@@ -2,6 +2,7 @@ package input_autocomplete
 
 import (
 	"errors"
+	"runtime"
 	"testing"
 )
 
@@ -14,6 +15,9 @@ func (d DirListerCustomMock) ListContent(path string) ([]string, error) {
 }
 
 func Test_autocomplete_unixAutocomplete(t *testing.T) {
+	if runtime.GOOS != "linux" && runtime.GOOS != "darwin" {
+		t.Skipf("Skip test because OS is %v", runtime.GOOS)
+	}
 	type fields struct {
 		cmd DirLister
 	}
