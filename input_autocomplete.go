@@ -2,6 +2,7 @@ package input_autocomplete
 
 import (
 	"fmt"
+
 	"github.com/eiannone/keyboard"
 )
 
@@ -26,7 +27,9 @@ func keyboardListener(input *Input) error {
 			input.RemoveChar()
 		case keyboard.KeyTab:
 			input.Autocomplete()
-
+		case keyboard.KeyCtrlC:
+			fmt.Println("")
+			return nil
 		default:
 			input.AddChar(char)
 		}
