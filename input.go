@@ -59,7 +59,7 @@ func (i *Input) MoveCursorRight() {
 }
 
 func (i *Input) Autocomplete() {
-	if i.currentText == ""{
+	if i.currentText == "" {
 		return
 	}
 	autocompletedText := Autocomplete(i.currentText)

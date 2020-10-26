@@ -31,7 +31,7 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 		want   string
 	}{
 		{
-			name:   "success to find some dir or file to autocomplete",
+			name: "success to find some dir or file to autocomplete",
 			fields: fields{
 				cmd: DirListerCustomMock{
 					listContentMock: func(path string) ([]string, error) {
@@ -39,13 +39,13 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 					},
 				},
 			},
-			args:   args{
+			args: args{
 				path: "ho",
 			},
-			want:   "./home",
+			want: "./home",
 		},
 		{
-			name:   "failed to find some dir or file to autocomplete",
+			name: "failed to find some dir or file to autocomplete",
 			fields: fields{
 				cmd: DirListerCustomMock{
 					listContentMock: func(path string) ([]string, error) {
@@ -53,13 +53,13 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 					},
 				},
 			},
-			args:   args{
+			args: args{
 				path: "auto",
 			},
-			want:   "./auto",
+			want: "./auto",
 		},
 		{
-			name:   "failed to find some dir or file to autocomplete",
+			name: "failed to find some dir or file to autocomplete",
 			fields: fields{
 				cmd: DirListerCustomMock{
 					listContentMock: func(path string) ([]string, error) {
@@ -67,13 +67,13 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 					},
 				},
 			},
-			args:   args{
+			args: args{
 				path: "/aut",
 			},
-			want:   "/aut",
+			want: "/aut",
 		},
 		{
-			name:   "success to find some dir or file to autocomplete",
+			name: "success to find some dir or file to autocomplete",
 			fields: fields{
 				cmd: DirListerCustomMock{
 					listContentMock: func(path string) ([]string, error) {
@@ -81,13 +81,13 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 					},
 				},
 			},
-			args:   args{
+			args: args{
 				path: "/bi",
 			},
-			want:   "/binary",
+			want: "/binary",
 		},
 		{
-			name:   "success with empty path",
+			name: "success with empty path",
 			fields: fields{
 				cmd: DirListerCustomMock{
 					listContentMock: func(path string) ([]string, error) {
@@ -95,13 +95,13 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 					},
 				},
 			},
-			args:   args{
+			args: args{
 				path: "",
 			},
-			want:   "",
+			want: "",
 		},
 		{
-			name:   "success with already completed path",
+			name: "success with already completed path",
 			fields: fields{
 				cmd: DirListerCustomMock{
 					listContentMock: func(path string) ([]string, error) {
@@ -109,13 +109,13 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 					},
 				},
 			},
-			args:   args{
+			args: args{
 				path: "./file.txt",
 			},
-			want:   "./file.txt",
+			want: "./file.txt",
 		},
 		{
-			name:   "failed to list content",
+			name: "failed to list content",
 			fields: fields{
 				cmd: DirListerCustomMock{
 					listContentMock: func(path string) ([]string, error) {
@@ -123,10 +123,10 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 					},
 				},
 			},
-			args:   args{
+			args: args{
 				path: "/bi",
 			},
-			want:   "/bi",
+			want: "/bi",
 		},
 	}
 	for _, tt := range tests {
