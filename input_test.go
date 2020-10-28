@@ -129,7 +129,6 @@ func TestAutocompleteOnNonUnixOS(t *testing.T) {
 	input.AddChar('a')
 	input.Autocomplete()
 
-
 	if input.currentText != expectedAutocomplete {
 		t.Errorf("Autocomplete with amy string on windows should return the same string - %v instead returned %v", expectedAutocomplete, input.currentText)
 	}

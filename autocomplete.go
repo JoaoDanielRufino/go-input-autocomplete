@@ -31,11 +31,11 @@ func hasInsensitivePrefix(s string, prefix string) bool {
 }
 
 func (a autocomplete) unixAutocomplete(path string) string {
-	if path == "" || path[len(path)-1] == ' '{
+	if path == "" || path[len(path)-1] == ' ' {
 		return path
 	}
 	lastSlash := strings.LastIndex(path, "/")
-	if lastSlash == -1 || (path[0] != '/' && path[:2] != "./"){
+	if lastSlash == -1 || (path[0] != '/' && path[:2] != "./") {
 		path = "./" + path
 		lastSlash = 1
 	}
