@@ -45,6 +45,20 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 			want: "./home",
 		},
 		{
+			name: "success to find some dir to autocomplete with absolute path",
+			fields: fields{
+				cmd: DirListerCustomMock{
+					listContentMock: func(path string) ([]string, error) {
+						return []string{".", "..", "home", "binary", "etc"}, nil
+					},
+				},
+			},
+			args: args{
+				path: "/ho",
+			},
+			want: "/home/",
+		},
+		{
 			name: "failed to find some dir or file to autocomplete",
 			fields: fields{
 				cmd: DirListerCustomMock{
