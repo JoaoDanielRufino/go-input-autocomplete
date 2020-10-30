@@ -36,6 +36,17 @@ func TestAddCharInEndOfText(t *testing.T) {
 	AssertTextAndPosition(t, input, "ab", 2)
 }
 
+func TestAddCharInMiddleOfText(t *testing.T) {
+	input := NewInput("test: ")
+	input.AddChar('a')
+	AssertTextAndPosition(t, input, "a", 1)
+	input.AddChar('b')
+	AssertTextAndPosition(t, input, "ab", 2)
+	input.cursor.MoveLeft()
+	input.AddChar('c')
+	AssertTextAndPosition(t, input, "acb", 2)
+}
+
 func TestRemoveChar(t *testing.T) {
 	input := NewInput("test: ")
 
