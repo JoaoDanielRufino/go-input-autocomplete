@@ -15,7 +15,7 @@ test:
 	go test -cover -v -timeout 60s -coverprofile=coverage.out ./...
 	# go cover works well when package is cloned in $GOPATH/src/ directory
 	go tool cover -func=coverage.out
-	go tool cover -html=coverage.out -o coverage.html
+	go tool cover -html=coverage.out
 
 .PHONY:clean
 clean:
