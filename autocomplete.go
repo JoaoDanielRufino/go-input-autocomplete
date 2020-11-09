@@ -12,11 +12,12 @@ type autocomplete struct {
 
 func Autocomplete(path string) string {
 	os := runtime.GOOS
+	a := autocomplete{
+		cmd: Cmd{},
+	}
+
 	switch os {
 	case "linux", "darwin":
-		a := autocomplete{
-			cmd: CmdUnix{},
-		}
 		return a.unixAutocomplete(path)
 	case "windows":
 		return path

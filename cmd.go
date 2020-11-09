@@ -4,23 +4,15 @@ import (
 	"io/ioutil"
 )
 
-type CmdUnix struct{}
-
-type CmdWindows struct{}
+type Cmd struct{}
 
 type DirLister interface {
 	ListContent(path string) ([]string, error)
 }
 
-func (c CmdUnix) ListContent(path string) ([]string, error) {
-	return readDir(path)
-}
-
-// readDir reads the directory named by root and
-// returns a list of directory entries sorted by filename.
-func readDir(root string) ([]string, error) {
+func (c Cmd) ListContent(path string) ([]string, error) {
 	var files []string
-	fileInfo, err := ioutil.ReadDir(root)
+	fileInfo, err := ioutil.ReadDir(path)
 	if err != nil {
 		return files, err
 	}
