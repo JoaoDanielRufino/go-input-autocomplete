@@ -6,12 +6,17 @@ import (
 	"testing"
 )
 
-type DirListerCustomMock struct {
+type DirListCheckerCustomMock struct {
 	listContentMock func(path string) ([]string, error)
+	isDirMock       func(path string) (bool, error)
 }
 
-func (d DirListerCustomMock) ListContent(path string) ([]string, error) {
+func (d DirListCheckerCustomMock) ListContent(path string) ([]string, error) {
 	return d.listContentMock(path)
+}
+
+func (d DirListCheckerCustomMock) IsDir(path string) (bool, error) {
+	return d.isDirMock(path)
 }
 
 func Test_autocomplete_unixAutocomplete(t *testing.T) {
@@ -19,7 +24,7 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 		t.Skipf("Skip test because OS is %v", runtime.GOOS)
 	}
 	type fields struct {
-		cmd DirLister
+		cmd DirListChecker
 	}
 	type args struct {
 		path string
@@ -33,9 +38,12 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 		{
 			name: "success to find some dir or file to autocomplete",
 			fields: fields{
-				cmd: DirListerCustomMock{
+				cmd: DirListCheckerCustomMock{
 					listContentMock: func(path string) ([]string, error) {
 						return []string{".", "..", "home", "binary", "etc"}, nil
+					},
+					isDirMock: func(path string) (bool, error) {
+						return false, nil
 					},
 				},
 			},
@@ -47,9 +55,12 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 		{
 			name: "success to find some dir to autocomplete with absolute path",
 			fields: fields{
-				cmd: DirListerCustomMock{
+				cmd: DirListCheckerCustomMock{
 					listContentMock: func(path string) ([]string, error) {
 						return []string{".", "..", "home", "binary", "etc"}, nil
+					},
+					isDirMock: func(path string) (bool, error) {
+						return true, nil
 					},
 				},
 			},
@@ -61,9 +72,12 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 		{
 			name: "failed to find some dir or file to autocomplete",
 			fields: fields{
-				cmd: DirListerCustomMock{
+				cmd: DirListCheckerCustomMock{
 					listContentMock: func(path string) ([]string, error) {
 						return []string{".", "..", "home", "binary", "etc"}, nil
+					},
+					isDirMock: func(path string) (bool, error) {
+						return false, nil
 					},
 				},
 			},
@@ -75,9 +89,12 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 		{
 			name: "failed to find some dir or file to autocomplete",
 			fields: fields{
-				cmd: DirListerCustomMock{
+				cmd: DirListCheckerCustomMock{
 					listContentMock: func(path string) ([]string, error) {
 						return []string{".", "..", "home", "binary", "etc"}, nil
+					},
+					isDirMock: func(path string) (bool, error) {
+						return false, nil
 					},
 				},
 			},
@@ -89,9 +106,12 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 		{
 			name: "success to find some dir or file to autocomplete",
 			fields: fields{
-				cmd: DirListerCustomMock{
+				cmd: DirListCheckerCustomMock{
 					listContentMock: func(path string) ([]string, error) {
 						return []string{".", "..", "home", "binary", "etc"}, nil
+					},
+					isDirMock: func(path string) (bool, error) {
+						return false, nil
 					},
 				},
 			},
@@ -103,9 +123,12 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 		{
 			name: "success with empty path",
 			fields: fields{
-				cmd: DirListerCustomMock{
+				cmd: DirListCheckerCustomMock{
 					listContentMock: func(path string) ([]string, error) {
 						return []string{".", "..", "home", "binary", "etc"}, nil
+					},
+					isDirMock: func(path string) (bool, error) {
+						return true, nil
 					},
 				},
 			},
@@ -117,9 +140,12 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 		{
 			name: "success with already completed path",
 			fields: fields{
-				cmd: DirListerCustomMock{
+				cmd: DirListCheckerCustomMock{
 					listContentMock: func(path string) ([]string, error) {
 						return []string{".", "..", "home", "binary", "etc", "file.txt"}, nil
+					},
+					isDirMock: func(path string) (bool, error) {
+						return false, nil
 					},
 				},
 			},
@@ -131,9 +157,12 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 		{
 			name: "failed to list content",
 			fields: fields{
-				cmd: DirListerCustomMock{
+				cmd: DirListCheckerCustomMock{
 					listContentMock: func(path string) ([]string, error) {
 						return nil, errors.New("some error")
+					},
+					isDirMock: func(path string) (bool, error) {
+						return false, nil
 					},
 				},
 			},

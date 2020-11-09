@@ -1,13 +1,12 @@
 package input_autocomplete
 
 import (
-	"os"
 	"runtime"
 	"strings"
 )
 
 type autocomplete struct {
-	cmd DirLister
+	cmd DirListChecker
 }
 
 func Autocomplete(path string) string {
@@ -41,7 +40,7 @@ func (a autocomplete) unixAutocomplete(path string) string {
 		lastSlash = 1
 	}
 	path = a.findFromPrefix(path, lastSlash)
-	ok, err := isDir(path)
+	ok, err := a.cmd.IsDir(path)
 	if ok && err == nil {
 		path = path + "/"
 	}
@@ -59,12 +58,4 @@ func (a autocomplete) findFromPrefix(prefix string, lastSlash int) string {
 		}
 	}
 	return prefix
-}
-
-func isDir(dir string) (bool, error) {
-	info, err := os.Stat(dir)
-	if err != nil {
-		return false, err
-	}
-	return info.IsDir(), nil
 }
