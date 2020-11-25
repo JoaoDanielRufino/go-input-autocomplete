@@ -88,7 +88,3 @@ func (a autocomplete) findFromPrefix(prefix string, lastSlash int) string {
 
 	return prefix
 }
-
-// func isAbsolutePathWindows(path string) bool {
-// 	return len(path) >= 2 && path[1] == ':'
-// }
