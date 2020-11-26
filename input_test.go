@@ -131,18 +131,19 @@ func TestGetCurrentText(t *testing.T) {
 }
 
 func TestAutocompleteOnNonUnixOS(t *testing.T) {
-	expectedAutocomplete := "a"
+	expectedAutocomplete := "C:\\ProgramData\\"
 
 	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
 		t.Skipf("Skip test because OS is %v", runtime.GOOS)
 	}
 	input := NewInput("test: ")
-	input.AddChar('a')
+	for _, ch := range "C:\\ProgramDa" {
+		input.AddChar(ch)
+	}
+
 	input.Autocomplete()
 
-	if input.currentText != expectedAutocomplete {
-		t.Errorf("Autocomplete with amy string on windows should return the same string - %v instead returned %v", expectedAutocomplete, input.currentText)
-	}
+	AssertTextAndPosition(t, input, expectedAutocomplete, len(expectedAutocomplete))
 }
 
 func TestAutocompleteOnUnixOS(t *testing.T) {
