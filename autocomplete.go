@@ -38,7 +38,11 @@ func (a autocomplete) unixAutocomplete(path string) string {
 	lastSlash := strings.LastIndex(path, "/")
 	if lastSlash == -1 || (path[0] != '/' && path[:2] != "./") {
 		path = "./" + path
-		lastSlash = 1
+		if !strings.Contains(path, "/") {
+			lastSlash = 1
+		} else {
+			lastSlash = strings.LastIndex(path, "/")
+		}
 	}
 
 	path = a.findFromPrefix(path, lastSlash)
