@@ -2,6 +2,8 @@ package input_autocomplete
 
 import (
 	"fmt"
+	"runtime"
+
 	"github.com/eiannone/keyboard"
 )
 
@@ -39,6 +41,13 @@ func Read(text string) (string, error) {
 	}
 
 	defer keyboard.Close()
+
+	os := runtime.GOOS
+	if os == "windows" {
+		if err := EnableVirtalTerminalWindows(); err != nil {
+			return "", err
+		}
+	}
 
 	input := NewInput(text)
 
