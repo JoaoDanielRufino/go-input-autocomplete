@@ -34,17 +34,8 @@ func (a autocomplete) unixAutocomplete(path string) string {
 	if path == "" || path[len(path)-1] == ' ' {
 		return path
 	}
-
+	path = cleanFilePathUnix(path)
 	lastSlash := strings.LastIndex(path, "/")
-	if lastSlash == -1 || (path[0] != '/' && path[:2] != "./") {
-		path = "./" + path
-		if !strings.Contains(path, "/") {
-			lastSlash = 1
-		} else {
-			lastSlash = strings.LastIndex(path, "/")
-		}
-	}
-
 	path = a.findFromPrefix(path, lastSlash)
 	ok, err := a.cmd.IsDir(path)
 	if ok && err == nil {
@@ -75,6 +66,23 @@ func (a autocomplete) windowsAutocomplete(path string) string {
 		path = path + "\\"
 	}
 
+	return path
+}
+
+func cleanFilePathUnix(path string) string {
+	n := len(path)
+	switch {
+	case n == 0:
+		path = "./"
+	case n == 1:
+		if path != "/" {
+			path = "./" + path
+		}
+	case n > 1:
+		if path[0] != '/' && path[:2] != "./" {
+			path = "./" + path
+		}
+	}
 	return path
 }
 

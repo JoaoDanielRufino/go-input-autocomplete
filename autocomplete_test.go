@@ -183,3 +183,85 @@ func Test_autocomplete_unixAutocomplete(t *testing.T) {
 		})
 	}
 }
+
+func Test_cleanFilePathUnix(t *testing.T) {
+	type args struct {
+		path string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "/ dir file clean",
+			args: args{
+				path: "/bi",
+			},
+			want: "/bi",
+		},
+		{
+			name: "nested dir file clean",
+			args: args{
+				path: "/bi/as/d",
+			},
+			want: "/bi/as/d",
+		},
+		{
+			name: "simple file clean",
+			args: args{
+				path: "f",
+			},
+			want: "./f",
+		},
+		{
+			name: "simple file clean2",
+			args: args{
+				path: "/f",
+			},
+			want: "/f",
+		},
+		{
+			name: "empty file clean",
+			args: args{
+				path: "",
+			},
+			want: "./",
+		},
+		{
+			name: "/ dir clean",
+			args: args{
+				path: "/",
+			},
+			want: "/",
+		},
+		{
+			name: "./ dir clean",
+			args: args{
+				path: "./",
+			},
+			want: "./",
+		},
+		{
+			name: "./ dir file clean",
+			args: args{
+				path: "./bi",
+			},
+			want: "./bi",
+		},
+		{
+			name: "nested dir file clean",
+			args: args{
+				path: "./bi/as/d",
+			},
+			want: "./bi/as/d",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := cleanFilePathUnix(tt.args.path); got != tt.want {
+				t.Errorf("cleanFilePathUnix() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
