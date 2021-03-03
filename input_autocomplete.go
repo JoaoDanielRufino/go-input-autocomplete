@@ -57,5 +57,7 @@ func Read(text string) (string, error) {
 		return "", err
 	}
 
+	input.RemoveLastSlashIfNeeded()
+
 	return input.GetCurrentText(), nil
 }
