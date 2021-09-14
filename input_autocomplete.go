@@ -31,7 +31,8 @@ func keyboardListener(input *Input) error {
 			input.Autocomplete()
 		case keyboard.KeyCtrlC:
 			return errors.New("Aborted")
-
+		case keyboard.KeySpace:
+			input.AddChar(32) // rune for space char
 		default:
 			input.AddChar(char)
 		}

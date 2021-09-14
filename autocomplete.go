@@ -25,13 +25,21 @@ func Autocomplete(path string) string {
 	}
 }
 
+func invalidPath(path string) bool {
+	if path == "" || strings.TrimSpace(path) == "" {
+		return true
+	}
+
+	return false
+}
+
 // Return if the string starts with prefix, case insensitive
 func hasInsensitivePrefix(s string, prefix string) bool {
 	return len(s) >= len(prefix) && strings.EqualFold(s[0:len(prefix)], prefix)
 }
 
 func (a autocomplete) unixAutocomplete(path string) string {
-	if path == "" || path[len(path)-1] == ' ' {
+	if invalidPath(path) {
 		return path
 	}
 
@@ -55,7 +63,7 @@ func (a autocomplete) unixAutocomplete(path string) string {
 }
 
 func (a autocomplete) windowsAutocomplete(path string) string {
-	if path == "" || path[len(path)-1] == ' ' {
+	if invalidPath(path) {
 		return path
 	}
 
