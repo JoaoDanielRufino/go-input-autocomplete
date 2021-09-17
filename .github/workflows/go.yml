@@ -16,3 +16,23 @@ jobs:
 
       - name: Test
         run: make test
+  MacOs:
+    runs-on: macos-11
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+
+      - name: Test
+        run: make test
+  Windows:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+
+      - name: Test
+        run: go test -v
