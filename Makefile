@@ -1,6 +1,3 @@
-.PHONY:all
-all: clean test build
-
 .PHONY:build
 build: go-fmt go-vet
 	@echo "building the autocomplete executable"
@@ -9,11 +6,15 @@ build: go-fmt go-vet
 	go build -x -v -o gia cmd/main.go
 	@echo "executable created gia"
 
-.PHONY:test
-test:
+.PHONY:unit-test
+unit-test:
+	@echo "running unit tests"
+	go test -v `go list ./... | grep -v test/`
+
+.PHONY:coverage
+coverage:
 	@echo "testing the autocomplete package"
 	go test -cover -v -timeout 60s -coverprofile=coverage.out ./...
-	# go cover works well when package is cloned in $GOPATH/src/ directory
 	go tool cover -func=coverage.out
 	go tool cover -html=coverage.out
 
