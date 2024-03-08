@@ -48,7 +48,7 @@ func Read(text string) (string, error) {
 
 	os := runtime.GOOS
 	if os == "windows" {
-		if err := EnableVirtalTerminalWindows(); err != nil {
+		if err := EnableVirtualTerminalWindows(); err != nil {
 			return "", err
 		}
 	}
