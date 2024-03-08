@@ -53,27 +53,7 @@ func (a autocomplete) unixAutocomplete(path string) []string {
 		}
 	}
 
-	contents, err := a.cmd.ListContent(path[:lastSlash+1])
-	if err != nil {
-		return []string{path}
-	}
-
-	var matches []string
-	for _, content := range contents {
-		if hasInsensitivePrefix(content, path[lastSlash+1:]) {
-			p := path[:lastSlash+1] + content
-			ok, err := a.cmd.IsDir(p)
-			if ok && err == nil {
-				p = p + "/"
-			}
-			matches = append(matches, p)
-		}
-	}
-	if len(matches) == 0 {
-		matches = append(matches, path)
-	}
-
-	return matches
+	return a.findFromPrefix(path, lastSlash, "/")
 }
 
 func (a autocomplete) windowsAutocomplete(path string) []string {
@@ -91,21 +71,28 @@ func (a autocomplete) windowsAutocomplete(path string) []string {
 		}
 	}
 
-	contents, err := a.cmd.ListContent(path[:lastSlash+1])
+	return a.findFromPrefix(path, lastSlash, "\\")
+}
+
+func (a autocomplete) findFromPrefix(prefix string, lastSlash int, sep string) []string {
+	contents, err := a.cmd.ListContent(prefix[:lastSlash+1])
 	if err != nil {
-		return []string{path}
+		return []string{prefix}
 	}
 
 	var matches []string
 	for _, content := range contents {
-		if hasInsensitivePrefix(content, path[lastSlash+1:]) {
-			p := path[:lastSlash+1] + content
+		if hasInsensitivePrefix(content, prefix[lastSlash+1:]) {
+			p := prefix[:lastSlash+1] + content
 			ok, err := a.cmd.IsDir(p)
 			if ok && err == nil {
-				p = p + "\\"
+				p = p + sep
 			}
 			matches = append(matches, p)
 		}
+	}
+	if len(matches) == 0 {
+		matches = append(matches, prefix)
 	}
 
 	return matches
