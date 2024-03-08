@@ -60,10 +60,12 @@ func (i *Input) RemoveChar() {
 }
 
 func (i *Input) MoveCursorLeft() {
+	i.isCycling = false
 	i.cursor.MoveLeft()
 }
 
 func (i *Input) MoveCursorRight() {
+	i.isCycling = false
 	if i.cursor.GetPosition() < len(i.currentText) {
 		i.cursor.MoveRight()
 	}
