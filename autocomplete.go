@@ -9,7 +9,7 @@ type autocomplete struct {
 	cmd DirListChecker
 }
 
-func Autocomplete(path string) string {
+func Autocomplete(path string) []string {
 	os := runtime.GOOS
 	a := autocomplete{
 		cmd: Cmd{},
@@ -21,7 +21,7 @@ func Autocomplete(path string) string {
 	case "windows":
 		return a.windowsAutocomplete(path)
 	default:
-		return path
+		return []string{path}
 	}
 }
 
@@ -38,9 +38,9 @@ func hasInsensitivePrefix(s string, prefix string) bool {
 	return len(s) >= len(prefix) && strings.EqualFold(s[0:len(prefix)], prefix)
 }
 
-func (a autocomplete) unixAutocomplete(path string) string {
+func (a autocomplete) unixAutocomplete(path string) []string {
 	if invalidPath(path) {
-		return path
+		return []string{path}
 	}
 
 	lastSlash := strings.LastIndex(path, "/")
@@ -53,18 +53,32 @@ func (a autocomplete) unixAutocomplete(path string) string {
 		}
 	}
 
-	path = a.findFromPrefix(path, lastSlash)
-	ok, err := a.cmd.IsDir(path)
-	if ok && err == nil {
-		path = path + "/"
+	contents, err := a.cmd.ListContent(path[:lastSlash+1])
+	if err != nil {
+		return []string{path}
 	}
 
-	return path
+	var matches []string
+	for _, content := range contents {
+		if hasInsensitivePrefix(content, path[lastSlash+1:]) {
+			p := path[:lastSlash+1] + content
+			ok, err := a.cmd.IsDir(p)
+			if ok && err == nil {
+				p = p + "/"
+			}
+			matches = append(matches, p)
+		}
+	}
+	if len(matches) == 0 {
+		matches = append(matches, path)
+	}
+
+	return matches
 }
 
-func (a autocomplete) windowsAutocomplete(path string) string {
+func (a autocomplete) windowsAutocomplete(path string) []string {
 	if invalidPath(path) {
-		return path
+		return []string{path}
 	}
 
 	lastSlash := strings.LastIndex(path, "\\")
@@ -77,26 +91,22 @@ func (a autocomplete) windowsAutocomplete(path string) string {
 		}
 	}
 
-	path = a.findFromPrefix(path, lastSlash)
-	ok, err := a.cmd.IsDir(path)
-	if ok && err == nil {
-		path = path + "\\"
-	}
-
-	return path
-}
-
-func (a autocomplete) findFromPrefix(prefix string, lastSlash int) string {
-	contents, err := a.cmd.ListContent(prefix[:lastSlash+1])
+	contents, err := a.cmd.ListContent(path[:lastSlash+1])
 	if err != nil {
-		return prefix
+		return []string{path}
 	}
 
+	var matches []string
 	for _, content := range contents {
-		if hasInsensitivePrefix(content, prefix[lastSlash+1:]) {
-			return prefix[:lastSlash+1] + content
+		if hasInsensitivePrefix(content, path[lastSlash+1:]) {
+			p := path[:lastSlash+1] + content
+			ok, err := a.cmd.IsDir(p)
+			if ok && err == nil {
+				p = p + "\\"
+			}
+			matches = append(matches, p)
 		}
 	}
 
-	return prefix
+	return matches
 }

@@ -9,6 +9,9 @@ type Input struct {
 	cursor      *Cursor
 	fixedText   string
 	currentText string
+	isCycling   bool
+	cyclingPos  int
+	matches     []string
 }
 
 func NewInput(fixedText string) *Input {
@@ -16,6 +19,9 @@ func NewInput(fixedText string) *Input {
 		cursor:      NewCursor(),
 		fixedText:   fixedText,
 		currentText: "",
+		isCycling:   false,
+		cyclingPos:  0,
+		matches:     []string{},
 	}
 }
 
@@ -24,6 +30,7 @@ func (i *Input) canDeleteChar() bool {
 }
 
 func (i *Input) AddChar(char rune) {
+	i.isCycling = false
 	pos := i.cursor.GetPosition()
 	c := string(char)
 
@@ -41,6 +48,7 @@ func (i *Input) AddChar(char rune) {
 }
 
 func (i *Input) RemoveChar() {
+	i.isCycling = false
 	if i.canDeleteChar() {
 		pos := i.cursor.GetPosition()
 		aux := len(i.currentText) - pos
@@ -62,8 +70,20 @@ func (i *Input) MoveCursorRight() {
 }
 
 func (i *Input) Autocomplete() {
-	autocompletedText := Autocomplete(i.currentText)
-	i.currentText = autocompletedText
+	if !i.isCycling {
+		i.isCycling = true
+		i.cyclingPos = 0
+		i.matches = Autocomplete(i.currentText)
+		if len(i.matches) <= 1 {
+			i.isCycling = false
+		}
+		if len(i.matches) == 0 {
+			return
+		}
+	}
+
+	i.currentText = i.matches[i.cyclingPos]
+	i.cyclingPos = (i.cyclingPos + 1) % len(i.matches)
 	i.cursor.SetPosition(len(i.currentText))
 	i.Print()
 }
