@@ -1,8 +1,8 @@
 module github.com/JoaoDanielRufino/go-input-autocomplete
 
-go 1.14
+go 1.21
 
 require (
-	github.com/eiannone/keyboard v0.0.0-20200508000154-caf4b762e807
-	golang.org/x/sys v0.0.0-20200806125547-5acd03effb82
+	github.com/eiannone/keyboard v0.0.0-20220611211555-0d226195f203
+	golang.org/x/sys v0.18.0
 )

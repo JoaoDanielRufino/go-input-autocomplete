@@ -1,4 +1,4 @@
-// +build windows
+//go:build windows
 
 package input_autocomplete
 
@@ -8,7 +8,7 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-func EnableVirtalTerminalWindows() error {
+func EnableVirtualTerminalWindows() error {
 	var originalMode uint32
 	stdout := windows.Handle(os.Stdout.Fd())
 
