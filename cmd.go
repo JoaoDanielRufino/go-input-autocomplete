@@ -1,7 +1,6 @@
 package input_autocomplete
 
 import (
-	"io/ioutil"
 	"os"
 )
 
@@ -22,7 +21,7 @@ type DirListChecker interface {
 
 func (c Cmd) ListContent(path string) ([]string, error) {
 	var files []string
-	fileInfo, err := ioutil.ReadDir(path)
+	fileInfo, err := os.ReadDir(path)
 	if err != nil {
 		return files, err
 	}
